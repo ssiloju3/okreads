@@ -44,5 +44,20 @@ describe('BooksEffects', () => {
 
       httpMock.expectOne('/api/books/search?q=').flush([createBook('A')]);
     });
+    it('Should Error', done => {
+
+      actions = new ReplaySubject();
+      actions.next(BooksActions.searchBooks({ term: '' }));
+
+      effects.searchBooks$.subscribe(action => {
+
+        expect({error:action.type, type:'[Book Search Bar] Search Books Failure'}).to.eql(
+          BooksActions.searchBooksFailure({error:'[Book Search Bar] Search Books Failure'})
+        )
+        done();
+      });
+      httpMock.expectOne('/api/books/search?q=').flush(null,{status:400, statusText: 'Bad Request'});
+    });
+
   });
 });

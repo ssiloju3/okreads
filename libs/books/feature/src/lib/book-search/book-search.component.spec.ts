@@ -1,28 +1,80 @@
-import { expect } from 'chai';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { SharedTestingModule } from '@tmo/shared/testing';
-
+import { SharedTestingModule, createBook } from '@tmo/shared/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { BooksFeatureModule } from '../books-feature.module';
 import { BookSearchComponent } from './book-search.component';
-
-describe('ProductsListComponent', () => {
+import { addToReadingList, getAllBooks, clearSearch, getBooksError } from '@tmo/books/data-access';
+import { MemoizedSelector } from '@ngrx/store';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+describe('BookSearchComponent', () => {
   let component: BookSearchComponent;
   let fixture: ComponentFixture<BookSearchComponent>;
-
+  let store: MockStore;
+  let getBooks: MemoizedSelector<any, any>
+  let getBooksLoadError: MemoizedSelector<any,any>
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule]
+      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [provideMockStore()]
     }).compileComponents();
   }));
-
   beforeEach(() => {
     fixture = TestBed.createComponent(BookSearchComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    getBooks = store.overrideSelector(
+      getAllBooks,
+      [createBook('A'), createBook('B')]
+    );
+    getBooksLoadError = store.overrideSelector(getBooksError, { error: "Invalid book name"  });
     fixture.detectChanges();
   });
-
   it('should create', () => {
-    expect(component).to.exist;
+    const term = component.searchForm.controls['term'];
+    term.setValue("javascript");
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+  it('Should test formatDate', () => {
+    const date = new Date().toISOString()
+    const returnValue = component.formatDate(date);
+    const expectedDateValue = new Intl.DateTimeFormat('en-US').format(new Date(date))
+    expect(returnValue).toEqual(expectedDateValue);
+    const expectUndefined = component.formatDate(undefined);
+    expect(expectUndefined).toBeUndefined;
+  })
+  it('Should test trackByBookId', () => {
+    expect(component.trackByBookId(createBook('A'))).toEqual('A');
+  })
+  it('should testaddBookToReadingList', () => {
+    spyOn(store, 'dispatch').and.callFake(() =>{});
+    component.addBookToReadingList(component.books[0])
+    fixture.detectChanges();
+    expect(store.dispatch)
+      .toHaveBeenCalledWith(addToReadingList({ book: component.books[0] }));
+  });
+  it('Should testsearchExample', () => {
+    component.searchExample();
+    expect(component.searchForm.value).toEqual({ term: 'javascript' });
+  });
+  it('Should test else of searchBooks()', () => {
+    spyOn(store, 'dispatch').and.callFake(() =>{});
+    const term = component.searchForm.controls['term'];
+    term.setValue("");
+    fixture.detectChanges();
+    component.searchBooks();
+    expect(store.dispatch)
+      .toHaveBeenCalledWith(clearSearch());
+  });
+  it('should searchBooks with no value', () => {
+    getBooksError.setResult("");
+    store.refreshState();
+    const term = component.searchForm.controls['term'];
+    term.setValue("");
+    fixture.detectChanges();
+    component.searchBooks();
+    expect(component.searchTerm).toBe('');
   });
 });

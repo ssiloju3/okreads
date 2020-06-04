@@ -1,18 +1,37 @@
-import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import { getReadingList, removeFromReadingList } from '@tmo/books/data-access';
-
+import { ReadingListItem } from '@tmo/shared/models';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'tmo-reading-list',
   templateUrl: './reading-list.component.html',
   styleUrls: ['./reading-list.component.scss']
 })
-export class ReadingListComponent {
-  readingList$ = this.store.select(getReadingList);
-
-  constructor(private readonly store: Store) {}
-
+export class ReadingListComponent implements OnInit,OnDestroy {
+  public readingList$ = this.store.pipe(select(getReadingList));
+  public ngUnsubscribe$: Subject<boolean> = new Subject();
+  public readingListItems: ReadingListItem[] = []
+  constructor(private readonly store: Store) { }
+  ngOnInit(): void {
+    this.readingList$.pipe(takeUntil(this.ngUnsubscribe$)).subscribe((data) => {
+      this.readingListItems = data;
+    });
+  }
   removeFromReadingList(item) {
     this.store.dispatch(removeFromReadingList({ item }));
   }
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next(true);
+    this.ngUnsubscribe$.unsubscribe();
+  }
 }
+
+
+
+
+
+
+
+
