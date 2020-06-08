@@ -11,7 +11,7 @@ import {
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 @Component({
   selector: 'tmo-book-search',
   templateUrl: './book-search.component.html',
@@ -44,13 +44,15 @@ export class BookSearchComponent implements OnInit, OnDestroy {
         this.books = []
       }
     });
-    this.searchForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe$))
+    this.searchForm.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.ngUnsubscribe$))
       .subscribe(() => {
-        if (this.searchTerm === '') {
           this.errorMessage = ''
-          this.books = []
+          this.searchBooks();
         }
-      });
+      );
   }
   formatDate(date: void | string) {
     return date
