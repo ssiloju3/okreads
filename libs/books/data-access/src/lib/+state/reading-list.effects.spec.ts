@@ -9,8 +9,6 @@ import {
   createBook,
   createReadingListItem
 } from '@tmo/shared/testing';
-
-
 import { ReadingListEffects } from './reading-list.effects';
 import * as ReadingListActions from './reading-list.actions';
 import { HttpTestingController } from '@angular/common/http/testing';
@@ -30,13 +28,11 @@ describe('ToReadEffects', () => {
         provideMockStore()
       ]
     });
-
     effects = TestBed.inject(ReadingListEffects);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   describe('loadReadingList$', () => {
-
     it('Should test OnInitEffect', done => {
       actions = new ReplaySubject();
       actions.next(ReadingListEffects.prototype.ngrxOnInitEffects());
@@ -46,10 +42,8 @@ describe('ToReadEffects', () => {
         );
         done();
       });
-
       httpMock.expectOne('/api/reading-list').flush([]);
     })
-
     it('should work', done => {
       actions = new ReplaySubject();
       actions.next(ReadingListActions.loadReadingList());
@@ -60,11 +54,9 @@ describe('ToReadEffects', () => {
         );
         done();
       });
-
       httpMock.expectOne('/api/reading-list').flush([]);
     });
     it('Should Error loadReadingList', done=> {
-
       actions = new ReplaySubject();
       actions.next(ReadingListActions.loadReadingList());
 
@@ -74,16 +66,12 @@ describe('ToReadEffects', () => {
         );
         done();
       });
-
       httpMock.expectOne('/api/reading-list').flush(null,{status:400, statusText: 'Bad Request'});
-
     });
-
     it('should add to reading list', done => {
       actions = new ReplaySubject();
       const book = createBook('book');
       actions.next(ReadingListActions.addToReadingList({ book }));
-
       effects.addBook$.subscribe(action => {
         expect(action).to.eql(
           ReadingListActions.confirmedAddToReadingList({ book })
@@ -92,17 +80,14 @@ describe('ToReadEffects', () => {
       });
       httpMock.expectOne('/api/reading-list').flush(book);
     });
-
     it('should undo add to reading list', done => {
       actions = new ReplaySubject();
       const book = createBook('book');
       actions.next(ReadingListActions.addToReadingList({ book }));
-
       effects.addBook$.subscribe(action => {
         expect(action).to.eql(
           ReadingListActions.failedAddToReadingList({ book })
         );
-
         done();
       });
       httpMock
@@ -110,13 +95,10 @@ describe('ToReadEffects', () => {
         .flush(null, { status: 400, statusText: 'bad request' });
     });
   });
-
   it('removeBook$ should remove the book from readigList', done => {
     actions = new ReplaySubject();
-
     const item = createReadingListItem('A');
     actions.next(ReadingListActions.removeFromReadingList({ item }));
-
     effects.removeBook$.subscribe(action => {
       expect(action).to.eql(
         ReadingListActions.confirmedRemoveFromReadingList({ item })
@@ -124,14 +106,11 @@ describe('ToReadEffects', () => {
       done();
     });
     httpMock.expectOne(`/api/reading-list/${item.bookId}`).flush(item);
-
   });
   it('removeBook$ should undo the removed book upon remove failure', done => {
     actions = new ReplaySubject();
-
     const item = createReadingListItem('A');
     actions.next(ReadingListActions.removeFromReadingList({ item }));
-
     effects.removeBook$.subscribe(action => {
       expect(action).to.eql(
         ReadingListActions.failedRemoveFromReadingList({ item })
@@ -142,5 +121,31 @@ describe('ToReadEffects', () => {
       .expectOne(`/api/reading-list/${item.bookId}`)
       .flush(null, { status: 400, statusText: 'bad request' });
   });
-
+  it('Should set book finished', done => {
+    const book = createBook('A');
+    const item = createReadingListItem('A');
+    actions = new ReplaySubject();
+    actions.next(ReadingListActions.finishedReading({ item }));
+    effects.finishBook$.subscribe(action => {
+      expect(action).to.eql(ReadingListActions.loadReadingList());
+      done();
+    });
+    httpMock
+      .expectOne(`/api/reading-list/${item.bookId}/finished`)
+      .flush(book);
+  });
+  it('Should fail the setting the book as finished', done => {
+    const item = createReadingListItem('A');
+    actions = new ReplaySubject();
+    actions.next(ReadingListActions.finishedReading({ item }));
+    effects.finishBook$.subscribe(action => {
+      expect(action).to.eql(
+        ReadingListActions.failedFinishedReading({ item })
+      );
+      done();
+    });
+    httpMock
+      .expectOne(`/api/reading-list/${item.bookId}/finished`)
+      .flush(null, { status: 400, statusText: 'Bad request' });
+  });
 });
