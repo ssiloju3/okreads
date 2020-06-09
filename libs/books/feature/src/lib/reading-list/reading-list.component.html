@@ -4,13 +4,14 @@
       <img class="reading-list-item--cover" [src]="b.coverUrl" [alt]="b.title" />
     </div>
     <div class="reading-list-item--details">
-      <strong class="reading-list-item--details--title">{{ b.title }}</strong>
+      <strong data-testing="reading-list-item--details--title" class="reading-list-item--details--title">{{ b.title }}</strong>
       <div class="reading-list-item--details--author">
         {{ b.authors.join(',') }}
       </div>
     </div>
     <div>
       <button
+        data-testing="Remove-From-Reading"
         mat-icon-button
         color="warn"
         [attr.aria-label]="'Remove ' + b.title + ' from reading list'"
