@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { SharedTestingModule, createBook } from '@tmo/shared/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { BooksFeatureModule } from '../books-feature.module';
@@ -24,7 +24,7 @@ describe('BookSearchComponent', () => {
   let getBooksLoadError: MemoizedSelector<any,any>
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule, BrowserAnimationsModule],
+      imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [provideMockStore() , {provide: MatSnackBar, useClass: MatSnackBarRefMock}], 
     }).compileComponents();
