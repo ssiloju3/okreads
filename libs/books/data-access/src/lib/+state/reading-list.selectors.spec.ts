@@ -49,7 +49,7 @@ describe('ReadingList Selectors', () => {
       const result = ToReadSelectors.getTotalUnread(state);
       expect(result).toBe(4);
     });
-    it('getAllBooks should returns all books', ()=> {
+    it('getAllBooks() should returns all books from readingList', ()=> {
       const result = ToReadSelectors.getAllBooks(state);
       expect(result.length).toBe(5);
     });

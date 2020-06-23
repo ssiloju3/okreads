@@ -33,7 +33,8 @@ describe('ToReadEffects', () => {
   });
 
   describe('loadReadingList$', () => {
-    it('Should test OnInitEffect', done => {
+
+    it('Should test OnInitEffect to load readlingList', done => {
       actions = new ReplaySubject();
       actions.next(ReadingListEffects.prototype.ngrxOnInitEffects());
       effects.loadReadingList$.subscribe(action => {
@@ -43,8 +44,9 @@ describe('ToReadEffects', () => {
         done();
       });
       httpMock.expectOne('/api/reading-list').flush([]);
-    })
-    it('should work', done => {
+    });
+
+    it('loadReadingList$ should load readingList successfully', done => {
       actions = new ReplaySubject();
       actions.next(ReadingListActions.loadReadingList());
 
@@ -56,7 +58,8 @@ describe('ToReadEffects', () => {
       });
       httpMock.expectOne('/api/reading-list').flush([]);
     });
-    it('Should Error loadReadingList', done=> {
+    it('loadReadingList$ should mock an http error while loading ReadingList', done=> {
+
       actions = new ReplaySubject();
       actions.next(ReadingListActions.loadReadingList());
 
@@ -68,7 +71,8 @@ describe('ToReadEffects', () => {
       });
       httpMock.expectOne('/api/reading-list').flush(null,{status:400, statusText: 'Bad Request'});
     });
-    it('should add to reading list', done => {
+
+    it('addBook$ should add a book to reading list', done => {
       actions = new ReplaySubject();
       const book = createBook('book');
       actions.next(ReadingListActions.addToReadingList({ book }));
@@ -80,7 +84,8 @@ describe('ToReadEffects', () => {
       });
       httpMock.expectOne('/api/reading-list').flush(book);
     });
-    it('should undo add to reading list', done => {
+
+    it('addBook$ should mock undoAction for add to reading list upon http failure', done => {
       actions = new ReplaySubject();
       const book = createBook('book');
       actions.next(ReadingListActions.addToReadingList({ book }));
@@ -95,7 +100,8 @@ describe('ToReadEffects', () => {
         .flush(null, { status: 400, statusText: 'bad request' });
     });
   });
-  it('removeBook$ should remove the book from readigList', done => {
+
+  it('removeBook$ should remove the book from readingList', done => {
     actions = new ReplaySubject();
     const item = createReadingListItem('A');
     actions.next(ReadingListActions.removeFromReadingList({ item }));
@@ -107,7 +113,7 @@ describe('ToReadEffects', () => {
     });
     httpMock.expectOne(`/api/reading-list/${item.bookId}`).flush(item);
   });
-  it('removeBook$ should undo the removed book upon remove failure', done => {
+  it('removeBook$ should mock undoAction for the removed book upon remove failure', done => {
     actions = new ReplaySubject();
     const item = createReadingListItem('A');
     actions.next(ReadingListActions.removeFromReadingList({ item }));
