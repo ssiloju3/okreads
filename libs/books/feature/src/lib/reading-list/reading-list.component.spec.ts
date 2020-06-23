@@ -29,7 +29,7 @@ describe('ReadingListComponent', () => {
   it('should create reading list component', () => {
     expect(component).toBeTruthy();
   });
-  it('should dispacth an action to remove the book from reading list ', ()=> {
+  it('should dispatch an action to remove the book from reading list ', ()=> {
     spyOn(store, 'dispatch').and.callThrough();
     component.removeFromReadingList(createReadingListItem('S'));
     expect(store.dispatch)
