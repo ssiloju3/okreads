@@ -33,7 +33,7 @@ describe('ReadingList Reducer', () => {
       expect(result.ids.length).to.eq(3);
     });
 
-    it('failedAddToReadingList should undo book addition to the state', () => {
+    it('failedAddToReadingList should not add a book to the state', () => {
       const action = ReadingListActions.failedAddToReadingList({
         book: createBook('B')
       });
@@ -52,7 +52,7 @@ describe('ReadingList Reducer', () => {
 
       expect(result.ids).to.eql(['A', 'B', 'C']);
     });
-    it('loadReadingListError should show eror while loading reading list', () => {
+    it('loadReadingListError should show error message while loading reading list fails', () => {
       const action = ReadingListActions.loadReadingListError({
         error: 'load readingList error'
       });
