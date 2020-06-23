@@ -31,13 +31,13 @@ describe('BookSearchComponent', () => {
     getBooksLoadError = store.overrideSelector(getBooksError, { error: "Invalid book name"  });
     fixture.detectChanges();
   });
-  it('should create', () => {
+  it('should create the book search component', () => {
     const term = component.searchForm.controls['term'];
     term.setValue("javascript");
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-  it('Should test formatDate', () => {
+  it('Should call formatDate to return the valid date', () => {
     const date = new Date().toISOString()
     const returnValue = component.formatDate(date);
     const expectedDateValue = new Intl.DateTimeFormat('en-US').format(new Date(date))
@@ -45,21 +45,21 @@ describe('BookSearchComponent', () => {
     const expectUndefined = component.formatDate(undefined);
     expect(expectUndefined).toBeUndefined;
   })
-  it('Should test trackByBookId', () => {
+  it('Should call trackByBookId with valid book', () => {
     expect(component.trackByBookId(createBook('A'))).toEqual('A');
   })
-  it('should testaddBookToReadingList', () => {
+  it('should dispatch an action to add a book to readingList', () => {
     spyOn(store, 'dispatch').and.callFake(() =>{});
     component.addBookToReadingList(component.books[0])
     fixture.detectChanges();
     expect(store.dispatch)
       .toHaveBeenCalledWith(addToReadingList({ book: component.books[0] }));
   });
-  it('Should testsearchExample', () => {
+  it('Should search a book for valid search term', () => {
     component.searchExample();
     expect(component.searchForm.value).toEqual({ term: 'javascript' });
   });
-  it('Should test else of searchBooks()', () => {
+  it('Should dispatch an action to clear the search', () => {
     spyOn(store, 'dispatch').and.callFake(() =>{});
     const term = component.searchForm.controls['term'];
     term.setValue("");
@@ -68,7 +68,7 @@ describe('BookSearchComponent', () => {
     expect(store.dispatch)
       .toHaveBeenCalledWith(clearSearch());
   });
-  it('should searchBooks with no value', () => {
+  it('should call searchBooks with no search term', () => {
     getBooksError.setResult("");
     store.refreshState();
     const term = component.searchForm.controls['term'];

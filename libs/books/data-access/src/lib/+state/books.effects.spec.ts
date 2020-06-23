@@ -31,7 +31,7 @@ describe('BooksEffects', () => {
   });
 
   describe('loadBooks$', () => {
-    it('should work', done => {
+    it('should dispatch seach book success when ever proper input is provided', done => {
       actions = new ReplaySubject();
       actions.next(BooksActions.searchBooks({ term: '' }));
 
@@ -44,7 +44,7 @@ describe('BooksEffects', () => {
 
       httpMock.expectOne('/api/books/search?q=').flush([createBook('A')]);
     });
-    it('Should Error', done => {
+    it('Should mock an http error while doing searchbook', done => {
 
       actions = new ReplaySubject();
       actions.next(BooksActions.searchBooks({ term: '' }));

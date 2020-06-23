@@ -26,10 +26,10 @@ describe('ReadingListComponent', () => {
     readingList$ = store.overrideSelector(getReadingList, [createReadingListItem('A')])
     fixture.detectChanges();
   });
-  it('should create', () => {
+  it('should create reading list component', () => {
     expect(component).toBeTruthy();
   });
-  it('should test removeFromReadingList', ()=> {
+  it('should dispacth an action to remove the book from reading list ', ()=> {
     spyOn(store, 'dispatch').and.callThrough();
     component.removeFromReadingList(createReadingListItem('S'));
     expect(store.dispatch)
