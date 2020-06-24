@@ -27,7 +27,6 @@ export class ReadingListEffects implements OnInitEffects {
       })
     )
   );
-
   addBook$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.addToReadingList),
@@ -49,7 +48,6 @@ export class ReadingListEffects implements OnInitEffects {
       })
     )
   );
-
   removeBook$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ReadingListActions.removeFromReadingList),
@@ -71,10 +69,23 @@ export class ReadingListEffects implements OnInitEffects {
       })
     )
   );
-
+  finishBook$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ReadingListActions.finishedReading),
+      optimisticUpdate({
+        run: ({ item }) => {
+          return this.http
+            .put(`/api/reading-list/${item.bookId}/finished`, item)
+            .pipe(map(() => ReadingListActions.loadReadingList()));
+        },
+        undoAction: ({ item }) => {
+          return ReadingListActions.failedFinishedReading({ item });
+        }
+      })
+    )
+  );
   ngrxOnInitEffects() {
     return ReadingListActions.loadReadingList();
   }
-
   constructor(private actions$: Actions, private http: HttpClient) {}
 }

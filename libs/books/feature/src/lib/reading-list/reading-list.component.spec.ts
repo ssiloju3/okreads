@@ -4,7 +4,7 @@ import { ReadingListComponent } from './reading-list.component';
 import { BooksFeatureModule } from '@tmo/books/feature';
 import { DebugElement } from '@angular/core';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { removeFromReadingList, getReadingList } from '@tmo/books/data-access';
+import { removeFromReadingList, getReadingList, finishedReading } from '@tmo/books/data-access';
 import { MemoizedSelector } from '@ngrx/store';
 describe('ReadingListComponent', () => {
   let component: ReadingListComponent;
@@ -35,5 +35,12 @@ describe('ReadingListComponent', () => {
     expect(store.dispatch)
       .toHaveBeenCalledWith(removeFromReadingList({item:createReadingListItem('S')}));
     expect(component.readingList$).toBeTruthy();
+  })
+  it('Should test finishedReading', ()=> {
+    spyOn(store, 'dispatch').and.callThrough();
+    const bookItem = createReadingListItem('A')
+    component.finishedReadingBook(bookItem)
+    expect(store.dispatch)
+      .toHaveBeenCalledWith(finishedReading({item:bookItem}));
   })
 });

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { getReadingList, removeFromReadingList } from '@tmo/books/data-access';
+import { getReadingList, removeFromReadingList, finishedReading } from '@tmo/books/data-access';
 import { ReadingListItem } from '@tmo/shared/models';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -22,13 +22,15 @@ export class ReadingListComponent implements OnInit,OnDestroy {
   removeFromReadingList(item) {
     this.store.dispatch(removeFromReadingList({ item }));
   }
+  finishedReadingBook(item) {
+    const finished: ReadingListItem = {...item}
+    this.store.dispatch(finishedReading({item:finished}))
+  }
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next(true);
     this.ngUnsubscribe$.unsubscribe();
   }
 }
-
-
 
 
 
