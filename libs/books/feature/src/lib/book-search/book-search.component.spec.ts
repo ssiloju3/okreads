@@ -37,7 +37,7 @@ describe('BookSearchComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-  it('Should call formatDate to return the valid date', () => {
+  it('should call formatDate to return the valid date', () => {
     const date = new Date().toISOString()
     const returnValue = component.formatDate(date);
     const expectedDateValue = new Intl.DateTimeFormat('en-US').format(new Date(date))
@@ -45,7 +45,7 @@ describe('BookSearchComponent', () => {
     const expectUndefined = component.formatDate(undefined);
     expect(expectUndefined).toBeUndefined;
   })
-  it('Should call trackByBookId with valid book', () => {
+  it('should call trackByBookId with valid book', () => {
     expect(component.trackByBookId(createBook('A'))).toEqual('A');
   })
   it('should dispatch an action to add a book to readingList', () => {
@@ -55,11 +55,11 @@ describe('BookSearchComponent', () => {
     expect(store.dispatch)
       .toHaveBeenCalledWith(addToReadingList({ book: component.books[0] }));
   });
-  it('Should search a book for valid search term', () => {
+  it('should search a book for valid search term', () => {
     component.searchExample();
     expect(component.searchForm.value).toEqual({ term: 'javascript' });
   });
-  it('Should dispatch an action to clear the search', () => {
+  it('should dispatch an action to clear the search', () => {
     spyOn(store, 'dispatch').and.callFake(() =>{});
     const term = component.searchForm.controls['term'];
     term.setValue("");
