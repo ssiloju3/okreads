@@ -6,6 +6,15 @@ import { DebugElement } from '@angular/core';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { removeFromReadingList, getReadingList } from '@tmo/books/data-access';
 import { MemoizedSelector } from '@ngrx/store';
+import { of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+export class MatSnackBarRefMock {
+  public open() {
+    return {
+      onAction: () => of({})
+    }
+  }
+}
 describe('ReadingListComponent', () => {
   let component: ReadingListComponent;
   let fixture: ComponentFixture<ReadingListComponent>;
@@ -15,7 +24,7 @@ describe('ReadingListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, SharedTestingModule],
-      providers: [provideMockStore()]
+      providers: [provideMockStore(), { provide: MatSnackBar, useClass: MatSnackBarRefMock }]
     }).compileComponents();
   }));
   beforeEach(() => {

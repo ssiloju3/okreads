@@ -7,7 +7,6 @@
     </button>
   </mat-form-field>
 </form>
-
 <ng-container *ngIf="searchTerm; else empty">
   <div class="book-grid">
     <div class="book" data-testing="book-item" *ngFor="let b of books; trackBy:trackByBookId">
@@ -26,7 +25,7 @@
           </div>
           <p [innerHTML]="b.description"></p>
           <div>
-            <button mat-flat-button color="primary" (click)="addBookToReadingList(b)" [disabled]="b.isAdded">
+            <button data-testing="Add-To-Reading" mat-flat-button color="primary" (click)="addBookToReadingList(b)" [disabled]="b.isAdded">
               Want to Read
             </button>
           </div>

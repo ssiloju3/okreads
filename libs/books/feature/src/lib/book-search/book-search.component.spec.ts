@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { SharedTestingModule, createBook } from '@tmo/shared/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { BooksFeatureModule } from '../books-feature.module';
@@ -7,6 +7,15 @@ import { BookSearchComponent } from './book-search.component';
 import { addToReadingList, getAllBooks, clearSearch, getBooksError } from '@tmo/books/data-access';
 import { MemoizedSelector } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+export class MatSnackBarRefMock {
+  public open() {
+    return {
+      onAction: () => of({})
+    }
+  }
+}
 describe('BookSearchComponent', () => {
   let component: BookSearchComponent;
   let fixture: ComponentFixture<BookSearchComponent>;
@@ -17,7 +26,7 @@ describe('BookSearchComponent', () => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideMockStore()]
+      providers: [provideMockStore() , {provide: MatSnackBar, useClass: MatSnackBarRefMock}], 
     }).compileComponents();
   }));
   beforeEach(() => {
@@ -50,10 +59,10 @@ describe('BookSearchComponent', () => {
   })
   it('should dispatch an action to add a book to readingList', () => {
     spyOn(store, 'dispatch').and.callFake(() =>{});
-    component.addBookToReadingList(component.books[0])
+    component.addBookToReadingList(createBook('A'))
     fixture.detectChanges();
     expect(store.dispatch)
-      .toHaveBeenCalledWith(addToReadingList({ book: component.books[0] }));
+      .toHaveBeenCalledWith(addToReadingList({ book: createBook('A') }));
   });
   it('should search a book for valid search term', () => {
     component.searchExample();
