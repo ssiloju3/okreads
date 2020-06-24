@@ -8,7 +8,7 @@ import {
 } from './reading-list.reducer';
 import { createBook, createReadingListItem } from '@tmo/shared/testing';
 
-describe('Books Reducer', () => {
+describe('ReadingList Reducer', () => {
   describe('valid Books actions', () => {
     let state: State;
 
@@ -33,7 +33,7 @@ describe('Books Reducer', () => {
       expect(result.ids.length).to.eq(3);
     });
 
-    it('failedAddToReadingList should undo book addition to the state', () => {
+    it('failedAddToReadingList should not add a book to the state', () => {
       const action = ReadingListActions.failedAddToReadingList({
         book: createBook('B')
       });
@@ -52,6 +52,39 @@ describe('Books Reducer', () => {
 
       expect(result.ids).to.eql(['A', 'B', 'C']);
     });
+    it('loadReadingListError should show error message while loading reading list fails', () => {
+      const action = ReadingListActions.loadReadingListError({
+        error: 'load readingList error'
+      });
+
+      const result: State = reducer(initialState, action);
+      expect(result.error).to.be.equal('load readingList error');
+    });
+
+    it('addToReadingList should add book to readingList', () => {
+      const action = ReadingListActions.addToReadingList({
+        book: createBook('x')
+      });
+      const result: State = reducer(initialState, action);
+      expect(result.ids[0]).to.be.equal('x');
+      expect(result.ids.length).to.eq(1);
+    });
+
+    it('loadReadingList should load the books', () => {
+      const action = ReadingListActions.loadReadingList();
+      const result: State = reducer(state, action);
+
+      expect(result.loaded).to.be.false;
+      expect(result.ids.length).to.eq(2);
+    });
+
+    it('removeFromReadingList should remove the book from reading List', () => {
+      const action = ReadingListActions.removeFromReadingList({item:createReadingListItem('A')});
+
+      const result: State = reducer(state, action);
+      expect(result.ids.length).to.eq(1);
+    });
+
   });
 
   describe('unknown action', () => {

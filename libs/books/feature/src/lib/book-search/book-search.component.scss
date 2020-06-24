@@ -68,5 +68,14 @@ form {
   justify-content: center;
   min-height: 50vh;
   font-size: 1.5rem;
-  color: $gray40;
+  color: $gray75;
+}
+.error-msg {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 0.9rem;
+  color:red;
 }

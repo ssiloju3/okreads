@@ -31,7 +31,7 @@ describe('BooksEffects', () => {
   });
 
   describe('loadBooks$', () => {
-    it('should work', done => {
+    it('should dispatch seach book success when ever proper input is provided', done => {
       actions = new ReplaySubject();
       actions.next(BooksActions.searchBooks({ term: '' }));
 
@@ -44,5 +44,20 @@ describe('BooksEffects', () => {
 
       httpMock.expectOne('/api/books/search?q=').flush([createBook('A')]);
     });
+    it('Should mock an http error while doing searchbook', done => {
+
+      actions = new ReplaySubject();
+      actions.next(BooksActions.searchBooks({ term: '' }));
+
+      effects.searchBooks$.subscribe(action => {
+
+        expect({error:action.type, type:'[Book Search Bar] Search Books Failure'}).to.eql(
+          BooksActions.searchBooksFailure({error:'[Book Search Bar] Search Books Failure'})
+        )
+        done();
+      });
+      httpMock.expectOne('/api/books/search?q=').flush(null,{status:400, statusText: 'Bad Request'});
+    });
+
   });
 });

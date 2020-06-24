@@ -47,5 +47,9 @@ describe('ReadingList Selectors', () => {
 
       expect(result).toBe(3);
     });
+    it('getAllBooks() should returns all books from readingList', ()=> {
+      const result = ToReadSelectors.getAllBooks(state);
+      expect(result.length).toBe(3);
+    });
   });
 });
