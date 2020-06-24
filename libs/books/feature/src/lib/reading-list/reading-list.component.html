@@ -13,7 +13,7 @@
         <strong>Finished: {{ b.finishedDate | date:'medium' }}</strong>
       </div>
     </div>
-    <div class="read-list-buttons">
+    <div class="read-list-btn">
       <button mat-mini-fab color="primary" class="finishbutton" data-testing="mark-as-finished-button" *ngIf="!b.finished"
         (click)="finishedReadingBook(b)">
         Finish
