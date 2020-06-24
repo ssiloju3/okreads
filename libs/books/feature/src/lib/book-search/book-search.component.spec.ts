@@ -79,7 +79,7 @@ describe('BookSearchComponent', () => {
     component.searchBooks();
     expect(component.searchTerm).toBe('');
   });
-  it('Should display the results when user type in input search field', fakeAsync(() => {
+  it('should display the results when user type in input search field', fakeAsync(() => {
     component.searchForm.setValue({ term: 'javascript' });
     getBooks = store.overrideSelector(getAllBooks, [createBook('javascript')]);
     store.refreshState();
