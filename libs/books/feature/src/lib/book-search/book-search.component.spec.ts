@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedTestingModule, createBook } from '@tmo/shared/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
@@ -63,6 +63,8 @@ describe('BookSearchComponent', () => {
     spyOn(store, 'dispatch').and.callFake(() =>{});
     const term = component.searchForm.controls['term'];
     term.setValue("");
+    getBooksLoadError.setResult(null)
+    store.refreshState();
     fixture.detectChanges();
     component.searchBooks();
     expect(store.dispatch)
@@ -77,4 +79,11 @@ describe('BookSearchComponent', () => {
     component.searchBooks();
     expect(component.searchTerm).toBe('');
   });
+  it('should display the results when user type in input search field', fakeAsync(() => {
+    component.searchForm.setValue({ term: 'javascript' });
+    getBooks = store.overrideSelector(getAllBooks, [createBook('javascript')]);
+    store.refreshState();
+    tick(500);
+    expect(component.books).toBeDefined();
+ }));
 });
