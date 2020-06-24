@@ -11,8 +11,11 @@
 .reading-list-item {
   display: flex;
   justify-content: center;
-  margin-bottom: $spacing-xs;
+  margin-top: $spacing-xxs;
+  margin-bottom: $spacing-xxs;
   width: 100%;
+  border-bottom: ridge;
+  height: 100px;
 
   > * {
     display: flex;
@@ -26,7 +29,9 @@
   max-height: 36px;
   margin-right: $spacing-xxs;
 }
-
+.button-gap button {	
+  margin-bottom: 7px;	
+}
 .reading-list-item--details {
   flex: 1;
   min-width: 0;
@@ -44,4 +49,12 @@
   font-weight: 100;
   font-size: 1rem;
   color: $gray60;
+}
+.mat-mini-fab {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+}
+.mat-mini-fab.mat-primary {
+  background-color: #228B22;
 }
